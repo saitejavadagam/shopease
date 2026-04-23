@@ -28,7 +28,7 @@ public class AuthController {
 
         String jwt =  authService.login(request);
 
-        return ResponseEntity.ok(new AuthResponse(jwt));
+        return ResponseEntity.status(HttpStatus.OK).body(new AuthResponse(jwt));
 
     }
 
