@@ -22,7 +22,7 @@ import java.io.StringWriter;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-public class JwtAuthenticationFilterTest {
+class JwtAuthenticationFilterTest {
 
     @Mock private JwtService jwtService;
     @Mock private UserDetailsService userDetailsService;
