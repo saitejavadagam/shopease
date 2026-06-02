@@ -19,24 +19,58 @@ public class ProductService {
 
     private final ProductRepository productRepository;
 
-    public ProductPageResponse getProducts(String search, int page, int size)
+    public ProductPageResponse getProducts(String search,String category,String subcategory, int page, int size)
     {
         Pageable pageable = PageRequest.of(page, size);
 
         Page<Product> productPage;
 
-        if(search == null || search.isBlank()){
-            productPage = productRepository.findAll(pageable);
-        } else {
-            productPage = productRepository.findByTitleContainingIgnoreCase(search, pageable);
+        boolean hasSearch = search != null && !search.isBlank();
+        boolean hasCategory = category != null && !category.isBlank();
+        boolean hasSubcategory = subcategory != null && !subcategory.isBlank();
+
+        if (hasCategory && hasSubcategory && hasSearch) {
+            productPage = productRepository.findByCategoryIgnoreCaseAndSubcategoryIgnoreCaseAndTitleContainingIgnoreCase(
+                    sanitizeString(category), sanitizeString(subcategory), search.trim(), pageable);
         }
 
+        else if (hasCategory && hasSubcategory) {
+            productPage = productRepository.findByCategoryIgnoreCaseAndSubcategoryIgnoreCase(
+                    sanitizeString(category), sanitizeString(subcategory), pageable);
+        }
+
+        else if (hasCategory && hasSearch) {
+            productPage = productRepository.findByCategoryIgnoreCaseAndTitleContainingIgnoreCase(
+                    sanitizeString(category), search.trim(), pageable);
+        }
+
+        else if (hasSearch) {
+            productPage = productRepository.findByTitleContainingIgnoreCase(search.trim(), pageable);
+        }
+
+        else if (hasCategory) {
+            productPage = productRepository.findByCategoryIgnoreCase(sanitizeString(category), pageable);
+        }
+
+        else {
+            productPage = productRepository.findAll(pageable);
+        }
+
+        Page<ProductResponse> responsePage = productPage.map(this::mapToResponse);
+
         return new ProductPageResponse(
-                productPage.stream().map(this::mapToResponse).toList(),
-                productPage.getNumber(),
-                productPage.getTotalPages(),
-                productPage.getTotalElements()
+                responsePage.getContent(),
+                responsePage.getNumber(),
+                responsePage.getTotalPages(),
+                responsePage.getTotalElements()
         );
+    }
+
+    private String sanitizeString(String string) {
+        return string.trim()
+                .toLowerCase()
+                .replace(" & ", "-")
+                .replace(" ", "-");
     }
 
     public ProductResponse getProductById(Long id) {

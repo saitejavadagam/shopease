@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom";
 
 const data = [
   {
@@ -82,42 +83,63 @@ const data = [
   }
 ];
 
-
-
-
 const RecommendedItems = () => {
+  const navigate = useNavigate();
+
+  const handleCategoryClick = (categoryName) => {
+    navigate(`/products?category=${encodeURIComponent(categoryName.toLowerCase())}`);
+  };
+
+  const handleItemClick = (itemName) => {
+    navigate(`/products?search=${encodeURIComponent(itemName)}`);
+  };
+
   return (
-    <section className='bg-gray-100 p-4'>
-      <div className='grid gap-4 sm:grid-cols-2 lg:grid-cols-4'>
-        {
-          data.map(card => (
-            <div
-              key={card.id}
-              className='bg-white p-4 flex flex-col'
-            >
-              <h3 className='text-lg font-semibold mb-3'>
-                {card.title}
-              </h3>
+    <section className="bg-gray-100 p-4">
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        {data.map((card) => (
+          <div
+            key={card.id}
+            className="bg-white p-4 flex flex-col justify-between"
+          >
 
-              <div className="grid grid-cols-2 gap-3 flex-1">
-                {
-                  card.items.map((item, index) => (
-                    <div className="cursor-pointer" key={index}>
-                      <img src={item.img} alt={item.name} className='w-full h-24 object-contain' />
-                      <p className='text-sm mt-1'>{item.name}</p>
+            <div>
+              <h3 className="text-lg font-semibold mb-3">{card.title}</h3>
+
+              <div className="grid grid-cols-2 gap-3">
+                {card.items.map((item, index) => (
+                  <div
+                    className="cursor-pointer group"
+                    key={index}
+                    onClick={() => handleItemClick(item.name)}
+                  >
+                    <div className="overflow-hidden bg-gray-50 rounded p-1">
+                      <img
+                        src={item.img}
+                        alt={item.name}
+                        className="w-full h-24 object-contain transition-transform duration-200 group-hover:scale-105"
+                      />
                     </div>
-                  ))
-                }
+                    <p className="text-sm mt-1 group-hover:text-sky-700 transition-colors">
+                      {item.name}
+                    </p>
+                  </div>
+                ))}
               </div>
-
-              <a href="/" className='text-sm text-sky-700 mt-3 hover:underline'>see more</a>
-
             </div>
-          ))
-        }
+
+
+            <button
+              onClick={() => handleCategoryClick(card.title)}
+              className="text-left text-sm text-sky-700 mt-4 hover:underline font-medium block w-max"
+            >
+              See more
+            </button>
+          </div>
+        ))}
       </div>
     </section>
-  )
-}
+  );
+};
 
-export default RecommendedItems
+export default RecommendedItems;
