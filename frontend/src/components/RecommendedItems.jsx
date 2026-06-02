@@ -103,7 +103,7 @@ const RecommendedItems = () => {
                 {
                   card.items.map((item, index) => (
                     <div className="cursor-pointer" key={index}>
-                      <img src={item.img} alt={item.name} className='w-full h-24 object-contain' loading="lazy" />
+                      <img src={item.img} alt={item.name} className='w-full h-24 object-contain' />
                       <p className='text-sm mt-1'>{item.name}</p>
                     </div>
                   ))

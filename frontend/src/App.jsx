@@ -1,4 +1,4 @@
-import { lazy, Suspense, useEffect } from 'react'
+import { lazy, useEffect } from 'react'
 import Navbar from './components/Navbar'
 import { Routes, Route } from 'react-router-dom'
 import Footer from './components/Footer';
@@ -8,6 +8,7 @@ import { useAuthStore } from './store/useAuthStore';
 
 import Loader from './components/Loader';
 import Profile from './pages/Profile';
+import SuspenseLoader from './components/SuspenseLoader';
 
 const Home = lazy(() => import("./pages/Home"));
 const Cart = lazy(() => import("./pages/Cart"));
@@ -36,53 +37,35 @@ const App = () => {
       <Routes>
 
         <Route path="/" element={
-          <Suspense fallback={<Loader message="Loading home page" />}>
-            <Home />
-          </Suspense>
+          <SuspenseLoader children={<Home />} message="Loading home page" />
         } />
 
         <Route path='/login' element={
-          <Suspense fallback={<Loader message="Loading login page" />}>
-            <Login />
-          </Suspense>
+          <SuspenseLoader children={<Login />} message="Loading login page" />
         } />
 
         <Route path='/signup' element={
-          <Suspense fallback={<Loader message="Loading signup page" />}>
-            <Signup />
-          </Suspense>
+          <SuspenseLoader children={<Signup />} message="Loading signup page" />
         } />
 
         <Route element={<ProtectedRoute />}>
           <Route path="/cart" element={
-            <Suspense fallback={<Loader message="Loading cart page" />}>
-              <Cart />
-            </Suspense>
+            <SuspenseLoader children={<Cart />} message="Loading cart page" />
           } />
           <Route path="/profile" element={
-            <Suspense fallback={<Loader message="Loading contact us page" />}>
-              <Profile />
-            </Suspense>
+            <SuspenseLoader children={<Profile />} message="Loading profile page" />
           } />
           <Route path="/products" element={
-            <Suspense fallback={<Loader message="Loading products page" />}>
-              <Products />
-            </Suspense>
+            <SuspenseLoader children={<Products />} message="Loading products page" />
           } />
           <Route path="/products/:id" element={
-            <Suspense fallback={<Loader message="Loading products page" />}>
-              <ProductView />
-            </Suspense>
+            <SuspenseLoader children={<ProductView />} message="Loading products page" />
           } />
           <Route path="/orders" element={
-            <Suspense fallback={<Loader message="Loading contact us page" />}>
-              <Orders />
-            </Suspense>
+            <SuspenseLoader children={<Orders />} message="Loading orders page" />
           } />
           <Route path="/contact" element={
-            <Suspense fallback={<Loader message="Loading contact us page" />}>
-              <Contact />
-            </Suspense>
+            <SuspenseLoader children={<Contact />} message="Loading contact page" />
           } />
         </Route>
 
